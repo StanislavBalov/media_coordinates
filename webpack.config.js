@@ -7,7 +7,7 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isProduction = process.env.NODE_ENV === 'production';
 
-const config = {
+module.exports = {
   mode: isProduction ? 'production' : 'development',
   entry: './src/scripts/app.js',
   output: {
