@@ -2,21 +2,155 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Media Coordinates</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timeline - Геолокационные записи</title>
+  <meta name="description" content="Приложение для создания записей с привязкой к геолокации">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  
+  <!-- Подключение шрифтов -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Иконки Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    /* Basic loading styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    body.loaded {
+      opacity: 1;
+    }
+    
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f5f5f5;
+      z-index: 9999;
+    }
+    
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #4285f4;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-  <div id="map-container">
-    <div id="map"></div>
-    <div id="legend">
-      <h3>Легенда</h3>
-      <ul>
-        <li><span class="marker red"></span> Красная точка</li>
-        <li><span class="marker blue"></span> Синяя точка</li>
-      </ul>
-    </div>
+  <!-- Preloader -->
+  <div class="loader">
+    <div class="spinner"></div>
   </div>
 
-  <script src="app.js"></script>
+  <!-- Main App Container -->
+  <div class="container">
+    <header class="app-header">
+      <h1><i class="fas fa-map-marker-alt"></i> Timeline</h1>
+      <p class="app-description">Создавайте записи с привязкой к вашему местоположению</p>
+    </header>
+    
+    <main>
+      <!-- Timeline Posts -->
+      <div id="timeline" class="timeline"></div>
+      
+      <!-- Text Post Input -->
+      <div class="post-input-container">
+        <div class="input-group">
+          <input type="text" id="post-input" placeholder="Введите текст записи..." aria-label="Текст записи">
+          <button id="submit-post" class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Media Controls -->
+      <div class="media-controls">
+        <div class="media-buttons">
+          <button id="start-audio" class="btn btn-audio">
+            <i class="fas fa-microphone"></i> Запись аудио
+          </button>
+          <button id="stop-audio" class="btn btn-danger" disabled>
+            <i class="fas fa-stop"></i> Стоп
+          </button>
+          
+          <button id="start-video" class="btn btn-video">
+            <i class="fas fa-video"></i> Запись видео
+          </button>
+          <button id="stop-video" class="btn btn-danger" disabled>
+            <i class="fas fa-stop"></i> Стоп
+          </button>
+        </div>
+        
+        <div class="media-previews">
+          <audio id="audio-preview" controls class="media-preview" style="display: none;"></audio>
+          <video id="video-preview" controls class="media-preview" style="display: none;"></video>
+        </div>
+      </div>
+    </main>
+    
+    <footer class="app-footer">
+      <p>© 2023 Timeline App | 
+        <span id="location-status"><i class="fas fa-map-marker-alt"></i> Определение местоположения...</span>
+      </p>
+    </footer>
+  </div>
+
+  <!-- Modal Template (will be cloned when needed) -->
+  <template id="modal-template">
+    <div class="modal">
+      <div class="modal-content">
+        <h3 class="modal-title"></h3>
+        <p class="modal-message"></p>
+        <div class="modal-body"></div>
+        <div class="modal-actions">
+          <button class="btn btn-cancel">Отмена</button>
+          <button class="btn btn-confirm">OK</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- Notification Template -->
+  <template id="notification-template">
+    <div class="notification">
+      <div class="notification-icon"></div>
+      <div class="notification-content">
+        <p class="notification-message"></p>
+      </div>
+      <button class="notification-close"><i class="fas fa-times"></i></button>
+    </div>
+  </template>
+
+  <script>
+    // Preloader logic
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.querySelector('.loader').style.display = 'none';
+        document.body.classList.add('loaded');
+      }, 500);
+    });
+  </script>
 </body>
 </html>

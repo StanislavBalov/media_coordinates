@@ -1,24 +1,57 @@
 {
   "name": "media_coordinates",
   "version": "1.0.0",
-  "description": "AHJ Media task",
+  "description": "AHJ Media task with geolocation, notifications and media recording",
   "homepage": "https://github.com/StanislavBalov/media_coordinates",
   "scripts": {
-    "start": "webpack serve --mode development",
+    "start": "webpack serve --mode development --open",
     "build": "webpack --mode production",
-    "test": "jest"
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:debug": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --config=jest.config.mjs --watch",
+    "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "set NODE_OPTIONS=--experimental-vm-modules && jest --coverage",
+    "lint": "eslint src",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
-    "css-loader": "^6.11.0",
-    "jest": "^29.7.0",
-    "style-loader": "^3.3.4",
-    "webpack": "^5.99.9",
+    "@babel/core": "^7.22.1",
+    "@babel/preset-env": "^7.22.4",
+    "@testing-library/jest-dom": "^6.6.3",
+    "babel-jest": "^29.5.0",
+    "babel-loader": "^9.1.2",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "core-js": "^3.42.0",
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.7.4",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.31.0",
+    "gh-pages": "^5.0.0",
+    "html-webpack-plugin": "^5.5.1",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "style-loader": "^3.3.3",
+    "webpack": "^5.88.1",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.2"
+    "webpack-dev-server": "^4.15.1"
   },
-  "main": "webpack.config.js",
-  "keywords": [],
-  "author": "",
+  "type": "module",
+  "keywords": [
+    "geolocation",
+    "media",
+    "webpack",
+    "javascript"
+  ],
+  "author": "Stanislav Balov",
   "license": "ISC",
-  "type": "commonjs"
+  "bugs": {
+    "url": "https://github.com/StanislavBalov/media_coordinates/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StanislavBalov/media_coordinates.git"
+  }
 }
