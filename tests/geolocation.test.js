@@ -29,7 +29,7 @@ describe('geolocation module', () => {
   expect(() => parseCoordinates('51.50851')).toThrow('Неверный формат координат');
   expect(() => parseCoordinates('текст')).toThrow('Неверный формат координат');
   expect(() => parseCoordinates('')).toThrow('Неверный формат координат');
-});
+    });
     
     test('выбрасывает ошибку при нечисловых координатах', () => {
       expect(() => parseCoordinates('abc, def')).toThrow('Координаты должны быть числами');
@@ -44,7 +44,7 @@ describe('geolocation module', () => {
       expect(() => parseCoordinates('')).toThrow('Неверный формат координат');
     });
   });
-
+});
 describe('getCurrentPosition()', () => {
   let originalGeolocation;
 
