@@ -45,64 +45,78 @@ describe('geolocation module', () => {
     });
   });
 
-  describe('getCurrentPosition()', () => {
-    beforeAll(() => {
-      // Мокаем геолокацию
-      global.navigator.geolocation = {
-        getCurrentPosition: jest.fn()
-      };
-    });
+describe('getCurrentPosition()', () => {
+  let originalGeolocation;
+
+  beforeAll(() => {
+    // Сохраняем оригинальный navigator.geolocation
+    originalGeolocation = global.navigator.geolocation;
+  });
+
+  beforeEach(() => {
+    // Мокаем geolocation перед каждым тестом
+    global.navigator.geolocation = {
+      getCurrentPosition: jest.fn()
+    };
+  });
+
+  afterAll(() => {
+    // Восстанавливаем оригинальный geolocation
+    global.navigator.geolocation = originalGeolocation;
+  });
+
+  test('возвращает Promise', () => {
+    const result = getCurrentPosition();
+    expect(result).toBeInstanceOf(Promise);
+  });
+
+  test('отклоняет промис если геолокация не поддерживается', async () => {
+    // Эмулируем отсутствие geolocation
+    delete global.navigator.geolocation;
     
-    test('возвращает Promise', () => {
-      expect(getCurrentPosition()).toBeInstanceOf(Promise);
-    });
-    
-    test('отклоняет промис если геолокация не поддерживается', async () => {
-      const originalGeolocation = navigator.geolocation;
-      delete global.navigator.geolocation;
-      
-      await expect(getCurrentPosition()).rejects.toThrow('Geolocation не поддерживается');
-      
-      global.navigator.geolocation = originalGeolocation;
-    });
-    
-    test('корректно обрабатывает успешный результат', async () => {
-      const mockPosition = {
-        coords: {
-          latitude: 51.50851,
-          longitude: -0.12572,
-          accuracy: 100
-        }
-      };
-      
-      navigator.geolocation.getCurrentPosition.mockImplementation((success) => {
-        success(mockPosition);
-      });
-      
-      await expect(getCurrentPosition()).resolves.toEqual({
-        lat: 51.50851,
-        lng: -0.12572,
+    await expect(getCurrentPosition()).rejects.toThrow(
+      'Geolocation не поддерживается вашим браузером'
+    );
+  });
+
+  test('корректно обрабатывает успешный результат', async () => {
+    // Мокаем успешный ответ
+    const mockPosition = {
+      coords: {
+        latitude: 51.50851,
+        longitude: -0.12572,
         accuracy: 100
-      });
+      }
+    };
+    
+    global.navigator.geolocation.getCurrentPosition.mockImplementation((success) => {
+      success(mockPosition);
     });
     
-    test('корректно обрабатывает ошибки', async () => {
-      const testCases = [
-        { code: 1, expectedError: 'Пользователь отказал в доступе' },
-        { code: 2, expectedError: 'Информация о местоположении недоступна' },
-        { code: 3, expectedError: 'Время ожидания геолокации истекло' },
-        { code: 0, expectedError: 'Произошла неизвестная ошибка' }
-      ];
-      
-      for (const { code, expectedError } of testCases) {
-        navigator.geolocation.getCurrentPosition.mockImplementationOnce((_, error) => {
-          error({ code });
-        });
-        
-        await expect(getCurrentPosition()).rejects.toThrow(expectedError);
-      }
+    await expect(getCurrentPosition()).resolves.toEqual({
+      lat: 51.50851,
+      lng: -0.12572,
+      accuracy: 100
     });
   });
+
+  test('корректно обрабатывает ошибки', async () => {
+    const testCases = [
+      { code: 1, expectedError: 'Пользователь отказал в доступе' },
+      { code: 2, expectedError: 'Информация о местоположении недоступна' },
+      { code: 3, expectedError: 'Время ожидания геолокации истекло' },
+      { code: 0, expectedError: 'Произошла неизвестная ошибка' }
+    ];
+    
+    for (const { code, expectedError } of testCases) {
+      global.navigator.geolocation.getCurrentPosition.mockImplementationOnce((_, error) => {
+        error({ code });
+      });
+      
+      await expect(getCurrentPosition()).rejects.toThrow(expectedError);
+    }
+  });
+});
 
   describe('isValidCoordinates()', () => {
     test('возвращает true для валидных координат', () => {
