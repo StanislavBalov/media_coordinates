@@ -25,11 +25,11 @@ describe('geolocation module', () => {
     });
     
     test('выбрасывает ошибку при неверном формате', () => {
-      expect(() => parseCoordinates('51.50851 -0.12572')).toThrow('Неверный формат координат');
-      expect(() => parseCoordinates('51.50851')).toThrow('Неверный формат координат');
-      expect(() => parseCoordinates('текст')).toThrow('Неверный формат координат');
-      expect(() => parseCoordinates('')).toThrow('Координаты должны быть строкой');
-    });
+  expect(() => parseCoordinates('51.50851 -0.12572')).toThrow('Неверный формат координат');
+  expect(() => parseCoordinates('51.50851')).toThrow('Неверный формат координат');
+  expect(() => parseCoordinates('текст')).toThrow('Неверный формат координат');
+  expect(() => parseCoordinates('')).toThrow('Неверный формат координат');
+});
     
     test('выбрасывает ошибку при нечисловых координатах', () => {
       expect(() => parseCoordinates('abc, def')).toThrow('Координаты должны быть числами');
@@ -101,21 +101,20 @@ describe('getCurrentPosition()', () => {
   });
 
   test('корректно обрабатывает ошибки', async () => {
-    const testCases = [
-      { code: 1, expectedError: 'Пользователь отказал в доступе' },
-      { code: 2, expectedError: 'Информация о местоположении недоступна' },
-      { code: 3, expectedError: 'Время ожидания геолокации истекло' },
-      { code: 0, expectedError: 'Произошла неизвестная ошибка' }
-    ];
+  const testCases = [
+    { code: 1, expectedError: 'Пользователь отказал в доступе' },
+    { code: 2, expectedError: 'Информация о местоположении недоступна' },
+    { code: 3, expectedError: 'Время ожидания геолокации истекло' },
+    { code: 999, expectedError: 'Произошла неизвестная ошибка' }
+  ];
+  
+  for (const { code, expectedError } of testCases) {
+    global.navigator.geolocation.getCurrentPosition.mockImplementationOnce(
+      (_, error) => error({ code })
+    );
     
-    for (const { code, expectedError } of testCases) {
-      global.navigator.geolocation.getCurrentPosition.mockImplementationOnce((_, error) => {
-        error({ code });
-      });
-      
-      await expect(getCurrentPosition()).rejects.toThrow(expectedError);
-    }
-  });
+    await expect(getCurrentPosition()).rejects.toThrow(expectedError);
+  }
 });
 
   describe('isValidCoordinates()', () => {

@@ -58,39 +58,31 @@ export function getCurrentPosition() {
       return;
     }
     
-    const options = {
-      enableHighAccuracy: true,
-      timeout: 5000,
-      maximumAge: 0
-    };
-    
-    const success = (position) => {
-      resolve({
+    navigator.geolocation.getCurrentPosition(
+      position => resolve({
         lat: position.coords.latitude,
         lng: position.coords.longitude,
         accuracy: position.coords.accuracy
-      });
-    };
-    
-    const error = (err) => {
-      let errorMessage;
-      switch (err.code) {
-        case err.PERMISSION_DENIED:
-          errorMessage = 'Пользователь отказал в доступе к геолокации';
-          break;
-        case err.POSITION_UNAVAILABLE:
-          errorMessage = 'Информация о местоположении недоступна';
-          break;
-        case err.TIMEOUT:
-          errorMessage = 'Время ожидания геолокации истекло';
-          break;
-        default:
-          errorMessage = 'Произошла неизвестная ошибка при получении геолокации';
-      }
-      reject(new Error(errorMessage));
-    };
-    
-    navigator.geolocation.getCurrentPosition(success, error, options);
+      }),
+      error => {
+        let errorMessage;
+        switch (error.code) {
+          case 1: // PERMISSION_DENIED
+            errorMessage = 'Пользователь отказал в доступе';
+            break;
+          case 2: // POSITION_UNAVAILABLE
+            errorMessage = 'Информация о местоположении недоступна';
+            break;
+          case 3: // TIMEOUT
+            errorMessage = 'Время ожидания геолокации истекло';
+            break;
+          default:
+            errorMessage = 'Произошла неизвестная ошибка';
+        }
+        reject(new Error(errorMessage));
+      },
+      { enableHighAccuracy: true, timeout: 5000 }
+    );
   });
 }
 
