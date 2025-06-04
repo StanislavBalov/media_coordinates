@@ -17,13 +17,29 @@ async function handlePostCreation() {
   }
 }
 
+function showLoader() {
+  const loader = document.createElement('div');
+  loader.className = 'loader';
+  document.body.appendChild(loader);
+  return loader;
+}
+
+function hideLoader(loader) {
+  if (loader && loader.parentNode) {
+    loader.parentNode.removeChild(loader);
+  }
+}
+
 async function createPostWithGeolocation(text) {
+  const loader = showLoader();
   try {
     const position = await getCurrentPosition();
-    addTextPost(text, position);
+    await addTextPost(text, position);
   } catch (error) {
     console.error('Geolocation error:', error);
     showCoordinatesModal(text);
+  } finally {
+    hideLoader(loader);
   }
 }
 
@@ -85,26 +101,3 @@ export function initApp() {
 }
 
 document.addEventListener('DOMContentLoaded', initApp);
-
-try {
-  await addTextPost(text, position);
-} catch (error) {
-  console.error('Failed to add post:', error);
-  alert('Ошибка при добавлении поста');
-}
-
-function isValidCoordinate(value) {
-  return !isNaN(value) && value >= -180 && value <= 180;
-}
-
-async function createPostWithGeolocation(text) {
-  const loader = showLoader();
-  try {
-    const position = await getCurrentPosition();
-    await addTextPost(text, position);
-  } catch (error) {
-    showCoordinatesModal(text);
-  } finally {
-    hideLoader(loader);
-  }
-}

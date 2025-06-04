@@ -38,18 +38,16 @@ const config = {
           }
         }
       },
+module.exports = {
+  module: {
+    rules: [
       {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: !isProduction,
-            }
-          }
-        ]
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
       },
+    ],
+  },
+};,
       {
         test: /\.(png|jpe?g|gif|svg|ico)$/i,
         type: 'asset/resource',
@@ -70,8 +68,7 @@ const config = {
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html',
-      favicon: './src/assets/favicon.ico',
-      minify: isProduction ? {
+        minify: isProduction ? {
         collapseWhitespace: true,
         removeComments: true,
         removeRedundantAttributes: true,
