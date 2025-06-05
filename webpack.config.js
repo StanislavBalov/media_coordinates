@@ -2,7 +2,6 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
   entry: './src/scripts/app.js',
   output: {
     filename: 'bundle.js',
@@ -10,13 +9,10 @@ module.exports = {
     clean: true,
   },
   devServer: {
-    static: {
-      directory: path.join(__dirname, 'dist'),
-    },
-    compress: true,
-    port: 9000,
-    open: true,
+    static: './dist',
     hot: true,
+    open: true,
+    port: 8080,
   },
   module: {
     rules: [
