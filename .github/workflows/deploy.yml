@@ -7,15 +7,13 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Setup Node.js
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node
       uses: actions/setup-node@v3
       with:
-        node-version: '18.x'
+        node-version: 20
 
     - name: Install dependencies
       run: npm install
@@ -23,9 +21,8 @@ jobs:
     - name: Build project
       run: npm run build
 
-    - name: Deploy to GitHub Pages
+    - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        deploy_key: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
-        keep_files: true
