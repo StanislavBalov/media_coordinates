@@ -8,12 +8,6 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     clean: true,
   },
-  devServer: {
-    static: './dist',
-    hot: true,
-    open: true,
-    port: 8080,
-  },
   module: {
     rules: [
       {
@@ -27,7 +21,4 @@ module.exports = {
       template: './src/index.html',
     }),
   ],
-  resolve: {
-    extensions: ['.js'],
-  },
 };

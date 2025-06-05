@@ -1,4 +1,4 @@
-import './styles/style.css';
+import '../styles/style.css';
 import { getCurrentPosition, parseCoordinates } from './geolocation.js';
 import { addTextPost } from './timeline.js';
 
